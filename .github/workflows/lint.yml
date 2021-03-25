@@ -1,0 +1,31 @@
+name: "Run linters"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run linters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # Node.js 14.x is latest of available one on Vercel
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - run: npm ci
+
+      # ESLint
+      - run: npm run lint:es
+
+      # stylelint
+      - run: npm run lint:style
+
