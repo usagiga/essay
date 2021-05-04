@@ -1,0 +1,13 @@
+version: "3"
+services:
+  blog:
+    build:
+      context: .
+      dockerfile: ./docker/blog/Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      JSON_SERVER_HOST: http://localhost:3000/
+    volumes:
+      - .:/src/essay
+      - /src/essay/node_modules
