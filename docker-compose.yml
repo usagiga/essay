@@ -1,17 +1,34 @@
 version: "3"
 services:
-  blog:
+  run:
     build:
       context: .
       dockerfile: ./docker/blog/Dockerfile
+      target: run
+    container_name: blog-run-dev
+    depends_on:
+      - stub-esa-api
     ports:
       - 3000:3000
     environment:
-      JSON_SERVER_HOST: http://json-server:3000
+      JSON_SERVER_HOST: http://stub-esa-api:3000
     volumes:
       - .:/src/essay
       - /src/essay/node_modules
-  json-server:
+  unit:
+    build:
+      context: .
+      dockerfile: ./docker/blog/Dockerfile
+      target: test
+    container_name: blog-unit-test
+    depends_on:
+      - stub-esa-api
+    environment:
+      JSON_SERVER_HOST: http://stub-esa-api:3000
+    volumes:
+      - .:/src/essay
+      - /src/essay/node_modules
+  stub-esa-api:
     build:
       context: .
       dockerfile: ./docker/json-server/Dockerfile
