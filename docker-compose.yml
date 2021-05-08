@@ -7,7 +7,17 @@ services:
     ports:
       - 3000:3000
     environment:
-      JSON_SERVER_HOST: http://localhost:3000/
+      JSON_SERVER_HOST: http://json-server:3000
     volumes:
       - .:/src/essay
       - /src/essay/node_modules
+  json-server:
+    build:
+      context: .
+      dockerfile: ./docker/json-server/Dockerfile
+    volumes:
+      - ./docker/json-server/:/src/json-server
+    command: json-server -w data.js -r routes.json -m auth.js -H 0.0.0.0
+    ports:
+      - 3030:3000
+    restart: always

@@ -1,0 +1,4 @@
+{
+  "/*?page=:page&per_page=:limit": "/$1?_page=:page&_limit=:limit",
+  "/v1/teams/:team/:resource": "/:resource"
+}
