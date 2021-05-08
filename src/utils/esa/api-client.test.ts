@@ -1,7 +1,8 @@
 import EsaAPIClient from "./api-client";
 
 test("getPosts", (done) => {
-  const client = new EsaAPIClient("test", "test-api-key", "http://127.0.0.1:3000/");
+  const apiOrigin = process.env.JSON_SERVER_HOST;
+  const client = new EsaAPIClient("test", "test-api-key", apiOrigin);
 
   client.getPosts("in:diary").then(
     posts => {
