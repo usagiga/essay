@@ -50,21 +50,16 @@ export default class EsaAPIClient {
           url.searchParams.set("per_page", "100");
           url.searchParams.set("page", `${nextPage}`);
 
-          const page = await rawFetcher(url, init);
-          if (implementsErrorResponse(page.body)) {
-            // eslint-disable-next-line no-console
-            console.error(`${page.body.error}: ${page.body.message}`);
-            break;
-          }
+          const page = await rawFetcher(url, init).catch(e => e as Error);
+          if (page instanceof Error) throw page;
+          if (implementsErrorResponse(page.body)) throw page.body;
 
           result.push(page.body);
 
           await page.rateLimit.waitForReset();
           nextPage = page.body.next_page;
         }
-      })().catch(e => reject(e));
-
-      resolve(result);
+      })().then(_ => resolve(result)).catch(e => reject(e));
     });
 
   withAuthentication = <T>(rawFetcher: fetcher<T>): fetcher<T> =>
