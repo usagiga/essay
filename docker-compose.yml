@@ -1,5 +1,6 @@
 version: "3"
 services:
+  # Run essay for development
   run:
     build:
       context: .
@@ -9,12 +10,12 @@ services:
     depends_on:
       - stub-esa-api
     ports:
-      - 3000:3000
-    environment:
-      JSON_SERVER_HOST: http://stub-esa-api:3000
+      - ${ESSAY_PORT}:${ESSAY_PORT}
     volumes:
       - .:/src/essay
       - /src/essay/node_modules
+
+  # Unit test for essay
   unit:
     build:
       context: .
@@ -23,18 +24,21 @@ services:
     container_name: blog-unit-test
     depends_on:
       - stub-esa-api
-    environment:
-      JSON_SERVER_HOST: http://stub-esa-api:3000
+    env_file:
+      # jest needs to specify .env by hand
+      - .env
     volumes:
       - .:/src/essay
       - /src/essay/node_modules
+
+  # JSON Server(stub of esa.io API)
   stub-esa-api:
     build:
       context: .
       dockerfile: ./docker/json-server/Dockerfile
     volumes:
       - ./docker/json-server/:/src/json-server
-    command: json-server -w data.js -r routes.json -m auth.js -H 0.0.0.0
+    command: json-server -w data.js -r routes.json -m auth.js -H 0.0.0.0 -p ${JSON_SERVER_PORT}
     ports:
-      - 3030:3000
+      - ${JSON_SERVER_PORT}:${JSON_SERVER_PORT}
     restart: always
