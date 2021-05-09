@@ -3,7 +3,7 @@ import { editor } from "./editor";
 
 /* eslint-disable camelcase */
 
-export interface post extends pageNation {
+export interface post {
   number: number
   name: string
   full_name: string
@@ -19,6 +19,10 @@ export interface post extends pageNation {
   revision_number: number
   created_by: editor
   updated_by: editor
+}
+
+export interface getPostResponse extends pageNation {
+  posts: post[]
 }
 
 // Example

@@ -1,7 +1,7 @@
 import RateLimit from "./types/rate-limit";
 import { pageNation } from "./types/page-nation";
 import { errorResponse, implementsErrorResponse } from "./types/error-response";
-import { post } from "./types/post";
+import { getPostResponse, post } from "./types/post";
 
 /* eslint-disable no-await-in-loop */
 
@@ -93,7 +93,7 @@ export default class EsaAPIClient {
   };
 
   // Get all posts
-  public getPosts = (query?: string): Promise<post[]> => {
+  public getPosts = async (query?: string): Promise<post[]> => {
     // Populate path
     const url = new URL(`/v1/teams/${this.teamName}/posts`, this.apiOrigin);
     if (query) {
@@ -101,10 +101,22 @@ export default class EsaAPIClient {
     }
 
     // Get all posts
-    return this.withPageNation<post>(
-      this.withAuthentication<post>(
+    const postResponses = await this.withPageNation<getPostResponse>(
+      this.withAuthentication<getPostResponse>(
         this.typedFetch
       )
-    )(url);
+    )(url).catch(e => e as Error);
+
+    if (postResponses instanceof Error) throw postResponses;
+
+    // Transform posts as result
+    const resSum = postResponses.reduce(
+      (prev, res) => {
+        res.posts.push(...prev.posts);
+
+        return res;
+      });
+
+    return resSum.posts;
   };
 }
