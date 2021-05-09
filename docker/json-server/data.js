@@ -44,7 +44,7 @@ module.exports = () => {
     "page": 1,
     "per_page": 100,
     "max_per_page": 100
-  }
+  };
 
   return data;
 };
