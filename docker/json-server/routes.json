@@ -1,8 +1,8 @@
 {
-  "/*([\\?&])page=:page(\\d+?)(&.+|)": "/$1$2_page=:page&_limit=1$4",
   "/*([\\?&])per_page=(\\d+?)(&.+|)": "/$1$2$4",
   "/*([\\?&])q=(.+?)(&.+|)": "/$1$2$4",
   "/*([\\?&])(&+)(.*)": "/$1$2$4",
   "/*([\\?&])": "/$1",
-  "/v1/teams/:team/:resource": "/:resource"
+  "/v1/teams/:team/:resource": "/:resource",
+  "/posts\\?page=:page": "/posts_:page"
 }
