@@ -1,0 +1,40 @@
+name: "Run tests"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    env:
+      ESSAY_PORT: 3000
+      JSON_SERVER_HOST: http://127.0.0.1
+      JSON_SERVER_PORT: 3030
+    steps:
+      - uses: actions/checkout@v2
+
+      # Use Node.js
+      # Node.js 14.x is latest of available one on Vercel
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      # Use JSON Server
+      - name: Use JSON Server
+        run: |
+          npm i -g json-server
+          json-server -w data.js -r routes.json -m auth.js -H 0.0.0.0 -p ${JSON_SERVER_PORT} &
+        working-directory: ./docker/json-server
+
+      # Run jest
+      - name: Run jest
+        run: |
+          npm ci
+          npm run test
