@@ -118,7 +118,7 @@ export default class EsaAPIClient {
     if (postResponses instanceof Error) throw postResponses;
 
     // Transform posts as result
-    const resSum = postResponses.reduce(
+    const resSum = postResponses.reduceRight(
       (prev, res) => {
         res.posts.push(...prev.posts);
 
