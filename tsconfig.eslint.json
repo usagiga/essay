@@ -6,7 +6,9 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".eslintrc.js",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "jest.*.js",
+    "docker/json-server/*.js"
   ],
   "exclude": [
     "node_modules"

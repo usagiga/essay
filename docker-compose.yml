@@ -1,0 +1,44 @@
+version: "3"
+services:
+  # Run essay for development
+  run:
+    build:
+      context: .
+      dockerfile: ./docker/blog/Dockerfile
+      target: run
+    container_name: blog-run-dev
+    depends_on:
+      - stub-esa-api
+    ports:
+      - ${ESSAY_PORT}:${ESSAY_PORT}
+    volumes:
+      - .:/src/essay
+      - /src/essay/node_modules
+
+  # Unit test for essay
+  unit:
+    build:
+      context: .
+      dockerfile: ./docker/blog/Dockerfile
+      target: test
+    container_name: blog-unit-test
+    depends_on:
+      - stub-esa-api
+    env_file:
+      # jest needs to specify .env by hand
+      - .env
+    volumes:
+      - .:/src/essay
+      - /src/essay/node_modules
+
+  # JSON Server(stub of esa.io API)
+  stub-esa-api:
+    build:
+      context: .
+      dockerfile: ./docker/json-server/Dockerfile
+    volumes:
+      - ./docker/json-server/:/src/json-server
+    command: json-server -w data.js -r routes.json -m auth.js -H 0.0.0.0 -p ${JSON_SERVER_PORT}
+    ports:
+      - ${JSON_SERVER_PORT}:${JSON_SERVER_PORT}
+    restart: always
