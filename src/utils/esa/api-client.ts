@@ -19,6 +19,8 @@ export default class EsaAPIClient {
   readonly apiKey: string;
   readonly apiOrigin: URL;
 
+  getPostCache = new Map<string, post[]>();
+
   // TODO : Implement error handling
   // - Retry with 429, 500
   // - Abort with 400, 401, 402, 403, 404, 405, 406
@@ -93,7 +95,13 @@ export default class EsaAPIClient {
   };
 
   // Get all posts
-  public getPosts = async (query?: string): Promise<post[]> => {
+  public getPosts = async (query= ''): Promise<post[]> => {
+    // If hit, return cache
+    const cache = this.getPostCache.get(query);
+    if (cache !== undefined && cache !== null) {
+      return cache;
+    }
+
     // Populate path
     const url = new URL(`/v1/teams/${this.teamName}/posts`, this.apiOrigin);
     if (query) {
@@ -116,6 +124,9 @@ export default class EsaAPIClient {
 
         return res;
       });
+
+    // Store posts as cache
+    this.getPostCache.set(query, resSum.posts);
 
     return resSum.posts;
   };
