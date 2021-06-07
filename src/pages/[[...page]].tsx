@@ -1,7 +1,7 @@
 import {FC} from "react";
 import Head from "next/head";
 
-const Index: FC = () => (
+const ArticleList: FC = () => (
     <>
         <Head>
             <title>Hello, World!</title>
@@ -11,4 +11,4 @@ const Index: FC = () => (
     </>
 )
 
-export default Index;
+export default ArticleList;
