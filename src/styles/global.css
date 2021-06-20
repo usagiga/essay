@@ -1,1 +1,73 @@
-/* WIP */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', '游ゴシック体', 'Yu Gothic', YuGothic, 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS P Gothic', sans-serif;
+  font-size: 100%;
+  font-variant-ligatures: none;
+  text-rendering: auto;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.page {
+  width: 720px;
+  padding: 16px 16px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.page > header {
+  width: fit-content;
+  margin: 32px auto;
+  text-align: center;
+}
+
+.page > header h1 {
+  padding: 8px 0;
+}
+
+/* Tags */
+.page .tags {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 16px 0 0 0;
+  list-style: none;
+}
+
+.page .tags > li {
+  display: inline-block;
+  padding: 0 4px;
+}
+
+.page .tags > li::before {
+  content: '#';
+}
+
+/* List Items */
+.page article {
+  padding: 32px 0;
+}
+
+.page article:not(:first-child) {
+  border-top: lightgrey 1px solid;
+}
+
+.page article > header {
+  margin: 8px 0;
+}
+
+.page article > time {
+  margin: 8px 0;
+  font-size: 0.8em;
+  line-height: 0.8em;
+  color: grey;
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: 100%;
+  }
+}
