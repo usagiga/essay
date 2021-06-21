@@ -2,6 +2,7 @@ import RateLimit from './types/rate-limit';
 import { pageNation } from './types/page-nation';
 import { errorResponse, implementsErrorResponse } from './types/error-response';
 import { getPostResponse, post } from './types/post';
+import EsaClient from './client';
 
 /* eslint-disable no-await-in-loop */
 
@@ -17,7 +18,7 @@ type typedFetchResponse<T> = {
   rateLimit: RateLimit;
 };
 
-export class EsaAPIClient {
+export default class EsaAPIClient extends EsaClient {
   readonly teamName: string;
   readonly apiKey: string;
   readonly apiOrigin: URL;
@@ -41,6 +42,8 @@ export class EsaAPIClient {
     apiKey: string,
     apiOrigin = 'https://api.esa.io',
   ) {
+    super();
+
     this.teamName = teamName;
     this.apiKey = apiKey;
     this.apiOrigin = new URL(apiOrigin);
@@ -147,13 +150,3 @@ export class EsaAPIClient {
     return resSum.posts;
   };
 }
-
-export const client = (() => {
-  const teamName = process.env.ESA_TEAM_NAME ?? 'example';
-  const apiKey = process.env.ESA_TEAM_NAME ?? 'example';
-  const host = process.env.JSON_SERVER_HOST ?? 'example.com';
-  const port = process.env.JSON_SERVER_PORT ?? '443';
-  const apiOrigin = `${host}:${port}`;
-
-  return new EsaAPIClient(teamName, apiKey, apiOrigin);
-})();

@@ -4,8 +4,8 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { client } from '../utils/esa/api-client';
 import { post } from '../utils/esa/types/post';
+import { client } from '../utils/esa/factory';
 
 const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
   const title = 'BlogTitle';

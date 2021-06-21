@@ -1,4 +1,4 @@
-import { EsaAPIClient } from './api-client';
+import EsaAPIClient from './api-client';
 
 test('getPosts', (done) => {
   const host = process.env.JSON_SERVER_HOST ?? '';
