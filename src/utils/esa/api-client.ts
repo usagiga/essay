@@ -1,20 +1,23 @@
-import RateLimit from "./types/rate-limit";
-import { pageNation } from "./types/page-nation";
-import { errorResponse, implementsErrorResponse } from "./types/error-response";
-import { getPostResponse, post } from "./types/post";
+import RateLimit from './types/rate-limit';
+import { pageNation } from './types/page-nation';
+import { errorResponse, implementsErrorResponse } from './types/error-response';
+import { getPostResponse, post } from './types/post';
 
 /* eslint-disable no-await-in-loop */
 
 // fetcher is for HOF
-type fetcher<T> = (url: URL, init?: RequestInit) => Promise<typedFetchResponse<T>>;
+type fetcher<T> = (
+  url: URL,
+  init?: RequestInit,
+) => Promise<typedFetchResponse<T>>;
 
 type typedFetchResponse<T> = {
-  body: T | errorResponse
-  statusCode: number
-  rateLimit: RateLimit
+  body: T | errorResponse;
+  statusCode: number;
+  rateLimit: RateLimit;
 };
 
-export default class EsaAPIClient {
+export class EsaAPIClient {
   readonly teamName: string;
   readonly apiKey: string;
   readonly apiOrigin: URL;
@@ -33,69 +36,85 @@ export default class EsaAPIClient {
   // readonly abortStatusCodes = [400, 401, 402, 403, 404, 405, 406];
   // readonly numOfRetry = 5;
 
-  constructor(teamName: string, apiKey: string, apiOrigin = "https://api.esa.io") {
+  constructor(
+    teamName: string,
+    apiKey: string,
+    apiOrigin = 'https://api.esa.io',
+  ) {
     this.teamName = teamName;
     this.apiKey = apiKey;
     this.apiOrigin = new URL(apiOrigin);
   }
 
   // High order fetcher to negotiate page nation
-  withPageNation = <T extends pageNation>(rawFetcher: fetcher<T>): (url: URL, init?: RequestInit) => Promise<T[]> =>
-    (url, init) => new Promise<T[]>((resolve, reject) => {
-      const result: T[] = [];
+  withPageNation =
+    <T extends pageNation>(
+      rawFetcher: fetcher<T>,
+    ): ((url: URL, init?: RequestInit) => Promise<T[]>) =>
+    (url, init) =>
+      new Promise<T[]>((resolve, reject) => {
+        const result: T[] = [];
 
-      (async () => {
-        let nextPage: number | null = 1;
+        (async () => {
+          let nextPage: number | null = 1;
 
-        while (nextPage) {
-          // Populate path
-          url.searchParams.set("per_page", "100");
-          url.searchParams.set("page", `${nextPage}`);
+          while (nextPage) {
+            // Populate path
+            url.searchParams.set('per_page', '100');
+            url.searchParams.set('page', `${nextPage}`);
 
-          const page = await rawFetcher(url, init).catch(e => e as Error);
-          if (page instanceof Error) throw page;
-          if (implementsErrorResponse(page.body)) throw page.body;
+            const page = await rawFetcher(url, init).catch((e) => e as Error);
+            if (page instanceof Error) throw page;
+            if (implementsErrorResponse(page.body)) throw page.body;
 
-          result.push(page.body);
+            result.push(page.body);
 
-          await page.rateLimit.waitForReset();
-          nextPage = page.body.next_page;
-        }
-      })().then(_ => resolve(result)).catch(e => reject(e));
-    });
+            await page.rateLimit.waitForReset();
+            nextPage = page.body.next_page;
+          }
+        })()
+          .then((_) => resolve(result))
+          .catch((e) => reject(e));
+      });
 
-  withAuthentication = <T>(rawFetcher: fetcher<T>): fetcher<T> =>
+  withAuthentication =
+    <T>(rawFetcher: fetcher<T>): fetcher<T> =>
     (url, init) => {
       const newInit = init || {};
       newInit.headers = {
-        "Authorization": `Bearer: ${this.apiKey}`
+        Authorization: `Bearer: ${this.apiKey}`,
       };
 
       return rawFetcher(url, newInit);
     };
 
-  typedFetch = <T>(url: URL, init?: RequestInit): Promise<typedFetchResponse<T>> => {
+  typedFetch = <T>(
+    url: URL,
+    init?: RequestInit,
+  ): Promise<typedFetchResponse<T>> => {
     let response: Response;
 
     return fetch(url.href, init)
-      .then(res => {
+      .then((res) => {
         response = res;
 
         return res.json() as Promise<T | errorResponse>;
       })
-      .then(json => ({
-          body: json,
-          statusCode: response.status,
-          rateLimit: new RateLimit(response)
-        }) as typedFetchResponse<T>
+      .then(
+        (json) =>
+          ({
+            body: json,
+            statusCode: response.status,
+            rateLimit: new RateLimit(response),
+          } as typedFetchResponse<T>),
       )
-      .catch(e => {
+      .catch((e) => {
         throw e;
       });
   };
 
   // Get all posts
-  public getPosts = async (query= ''): Promise<post[]> => {
+  public getPosts = async (query = ''): Promise<post[]> => {
     // If hit, return cache
     const cache = this.getPostCache.get(query);
     if (cache !== undefined && cache !== null) {
@@ -105,25 +124,22 @@ export default class EsaAPIClient {
     // Populate path
     const url = new URL(`/v1/teams/${this.teamName}/posts`, this.apiOrigin);
     if (query) {
-      url.searchParams.set("q", query);
+      url.searchParams.set('q', query);
     }
 
     // Get all posts
     const postResponses = await this.withPageNation<getPostResponse>(
-      this.withAuthentication<getPostResponse>(
-        this.typedFetch
-      )
-    )(url).catch(e => e as Error);
+      this.withAuthentication<getPostResponse>(this.typedFetch),
+    )(url).catch((e) => e as Error);
 
     if (postResponses instanceof Error) throw postResponses;
 
     // Transform posts as result
-    const resSum = postResponses.reduceRight(
-      (prev, res) => {
-        res.posts.push(...prev.posts);
+    const resSum = postResponses.reduceRight((prev, res) => {
+      res.posts.push(...prev.posts);
 
-        return res;
-      });
+      return res;
+    });
 
     // Store posts as cache
     this.getPostCache.set(query, resSum.posts);
@@ -131,3 +147,13 @@ export default class EsaAPIClient {
     return resSum.posts;
   };
 }
+
+export const client = (() => {
+  const teamName = process.env.ESA_TEAM_NAME ?? 'example';
+  const apiKey = process.env.ESA_TEAM_NAME ?? 'example';
+  const host = process.env.JSON_SERVER_HOST ?? 'example.com';
+  const port = process.env.JSON_SERVER_PORT ?? '443';
+  const apiOrigin = `${host}:${port}`;
+
+  return new EsaAPIClient(teamName, apiKey, apiOrigin);
+})();

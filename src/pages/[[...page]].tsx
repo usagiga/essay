@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import EsaAPIClient from '../utils/esa/api-client';
+import { client } from '../utils/esa/api-client';
 import { post } from '../utils/esa/types/post';
 
 const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
@@ -30,14 +30,14 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
               <time dateTime={article.created_at}>
                 {(() => {
                   const date = new Date(article.created_at);
-                  const padLeft = (digit: number, num: number): string => {
-                    const str = `${num}`.padStart(digit, '0');
+                  const padLeft = (num: number, length: number): string => {
+                    const str = `${num}`.padStart(length, '0');
 
-                    return str.slice(-digit);
+                    return str.slice(-length);
                   };
                   const y = date.getFullYear();
-                  const m = padLeft(2, date.getMonth() + 1);
-                  const d = padLeft(2, date.getDate());
+                  const m = padLeft(date.getMonth() + 1, 2);
+                  const d = padLeft(date.getDate(), 2);
 
                   return `${y}/${m}/${d}`;
                 })()}
@@ -66,11 +66,6 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (_) => {
-  // TODO : Use DI
-  const host = process.env.JSON_SERVER_HOST ?? '';
-  const port = process.env.JSON_SERVER_PORT ?? '';
-  const apiOrigin = `${host}:${port}`;
-  const client = new EsaAPIClient('debug', 'debug', apiOrigin);
   const articles = await client.getPosts();
 
   return {
@@ -81,11 +76,6 @@ export const getStaticProps: GetStaticProps = async (_) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // TODO : Use DI
-  const host = process.env.JSON_SERVER_HOST ?? '';
-  const port = process.env.JSON_SERVER_PORT ?? '';
-  const apiOrigin = `${host}:${port}`;
-  const client = new EsaAPIClient('debug', 'debug', apiOrigin);
   const articles = await client.getPosts();
   const paths = articles.map((article) => ({
     params: { page: ['page', `${article.number}`] },
