@@ -3,18 +3,16 @@ import EsaClient from './client';
 import EsaStubClient from './stub-client';
 
 export const client: EsaClient = (() => {
-  const nodeEnv = process.env.NODE_ENV;
-
-  // if nodeEnv is development or test
-  if (nodeEnv === 'development' || nodeEnv === 'test') {
+  const useEsaApiStub = process.env.USE_ESA_API_STUB ?? '';
+  if (useEsaApiStub === 'true') {
     return new EsaStubClient();
   }
 
   // if nodeEnv is production
   const teamName = process.env.ESA_TEAM_NAME ?? 'example';
-  const apiKey = process.env.ESA_TEAM_NAME ?? 'example';
-  const host = process.env.JSON_SERVER_HOST ?? 'example.com';
-  const port = process.env.JSON_SERVER_PORT ?? '443';
+  const apiKey = process.env.ESA_API_KEY ?? 'example';
+  const host = process.env.ESA_API_HOST ?? 'example.com';
+  const port = process.env.ESA_API_PORT ?? '443';
   const apiOrigin = `${host}:${port}`;
 
   return new EsaAPIClient(teamName, apiKey, apiOrigin);
