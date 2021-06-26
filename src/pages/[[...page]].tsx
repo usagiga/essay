@@ -9,6 +9,7 @@ import { client } from '../utils/esa/factory';
 
 const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
   const title = 'BlogTitle';
+  const logoPath = process.env.ESSAY_LOGO_PATH ?? '';
 
   return (
     <>
@@ -18,10 +19,11 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
 
       <div className="page">
         <header>
-          {/* TODO : Use correct logo */}
-          <div className="logo">
-            <Image src="/vercel.svg" alt="Logo" width={128} height={128} />
-          </div>
+          {logoPath !== '' && (
+            <div className="logo">
+              <Image src={logoPath} alt="Logo" width={64} height={64} />
+            </div>
+          )}
           <h1>{title}</h1>
         </header>
         <main>

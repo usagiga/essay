@@ -19,13 +19,20 @@ body {
 
 /* Logo */
 .page > header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
   width: fit-content;
-  margin: 32px auto;
-  text-align: center;
+  margin: 32px 0;
+}
+
+.logo {
+  margin: auto 16px auto 0;
 }
 
 .page > header h1 {
-  padding: 8px 0;
+  margin: auto 0;
 }
 
 /* Tags */
