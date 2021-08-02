@@ -6,6 +6,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { post } from '../utils/esa/types/post';
 import { client } from '../utils/esa/factory';
 import style from './[[...page]].module.scss';
+import Pager from '../components/pager';
 
 const ArticleList: FC<{ articles: post[] }> = ({ articles }) => (
   <>
@@ -47,7 +48,7 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => (
           )}
         </article>
       ))}
-      {/* TODO : Put pager here */}
+      <Pager />
     </div>
   </>
 );
