@@ -48,7 +48,7 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => (
           )}
         </article>
       ))}
-      <Pager />
+      <Pager length={7} />
     </div>
   </>
 );

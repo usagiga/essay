@@ -1,27 +1,23 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { FC } from 'react';
 import Link from 'next/link';
 import style from './pager.module.scss';
 
-const Pager: FC = () => (
-  <div className={style.container}>
-    <Link href="/">&lt; Newer</Link>
+interface PagerProps {
+  selectedIndex?: number
+  length: number
+}
 
-    <Link href="/">Older &gt;</Link>
-  </div>
-);
-
-const generatePagerButtons: FC = () => {
-  const selectedNum = 3;
-  const viewNum = 7;
-  const pageNum = 10;
-  const pages = [...Array(pageNum).keys()].reverse();
-
-  // selected 近傍
-  const kinbouNum = viewNum - (true ? 2 : 0) - 2;
+const Pager: FC<PagerProps> = ({ length }) => {
+  const arr = [...Array(length).keys()].reverse().map(n => n+1);
 
   return (
-    <div>
-      <p>yeah</p>
+    <div className={style.container}>
+      {arr.map((num) => (
+        <Link href={`./${num}`} key={num}>
+          <a>{num}</a>
+        </Link>
+      ))}
     </div>
   );
 };
