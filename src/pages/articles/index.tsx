@@ -88,7 +88,7 @@ const ArticleList: FC<{ articles: post[] }> = ({ articles }) => {
             )}
           </article>
         ))}
-        {needPager && <Pager length={pageLen} />}
+        {needPager && <Pager length={pageLen} routeCallback={(num) => `/articles?page=${num}`}/>}
       </div>
     </>
   );
