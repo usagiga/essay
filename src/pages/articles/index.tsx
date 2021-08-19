@@ -2,11 +2,11 @@
 import { FC } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import { post } from '../utils/esa/types/post';
-import { client } from '../utils/esa/factory';
-import style from './[[...page]].module.scss';
-import Pager from '../components/pager';
+import { GetStaticProps } from 'next';
+import { post } from '../../utils/esa/types/post';
+import { client } from '../../utils/esa/factory';
+import style from './index.module.scss';
+import Pager from '../../components/pager';
 
 const ArticleList: FC<{ articles: post[] }> = ({ articles }) => (
   <>
@@ -60,18 +60,6 @@ export const getStaticProps: GetStaticProps = async (_) => {
     props: {
       articles,
     },
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const articles = await client.getPosts();
-  const paths = articles.map((article) => ({
-    params: { page: ['page', `${article.number}`] },
-  }));
-
-  return {
-    paths,
-    fallback: true,
   };
 };
 
