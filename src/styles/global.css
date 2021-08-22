@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', '游ゴシック体', 'Yu Gothic', YuGothic, 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS P Gothic', sans-serif;
+  font-size: 100%;
+  font-variant-ligatures: none;
+  text-rendering: auto;
+  line-height: 1;
+  letter-spacing: 1px;
+}

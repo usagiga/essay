@@ -1,14 +1,14 @@
-import {FC} from "react";
-import Head from "next/head";
+import { FC, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-const Index: FC = () => (
-    <>
-        <Head>
-            <title>Hello, World!</title>
-        </Head>
+const IndexPage: FC = () => {
+  const router = useRouter();
 
-        <p>Hello, World!</p>
-    </>
-)
+  useEffect(() => {
+    void router.replace("/articles", "/");
+  });
 
-export default Index;
+  return null;
+}
+
+export default IndexPage;

@@ -9,6 +9,8 @@ services:
     container_name: blog-run-dev
     depends_on:
       - stub-esa-api
+    env_file:
+      - .env
     ports:
       - ${ESSAY_PORT}:${ESSAY_PORT}
     volumes:
@@ -25,7 +27,6 @@ services:
     depends_on:
       - stub-esa-api
     env_file:
-      # jest needs to specify .env by hand
       - .env
     volumes:
       - .:/src/essay

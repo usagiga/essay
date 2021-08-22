@@ -10,7 +10,8 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 ## Install dependencies of essay
 WORKDIR /src/essay
 ADD ./package.json .
-RUN npm i
+ADD ./package-lock.json .
+RUN npm ci
 
 # Debug Server Image
 FROM base AS run
