@@ -1,4 +1,12 @@
-version: "3"
+version: "3.4"
+
+x-aliases:
+  volumes-next: &volumes-next
+    volumes:
+      - .:/src/essay
+      - /src/essay/node_modules
+      - /src/essay/.next
+
 services:
   # Run essay for development
   run:
@@ -13,9 +21,7 @@ services:
       - .env
     ports:
       - ${ESSAY_PORT}:${ESSAY_PORT}
-    volumes:
-      - .:/src/essay
-      - /src/essay/node_modules
+    <<: *volumes-next
 
   # Unit test for essay
   unit:
@@ -28,9 +34,7 @@ services:
       - stub-esa-api
     env_file:
       - .env
-    volumes:
-      - .:/src/essay
-      - /src/essay/node_modules
+    <<: *volumes-next
 
   # JSON Server(stub of esa.io API)
   stub-esa-api:
