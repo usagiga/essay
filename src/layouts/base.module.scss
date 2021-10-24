@@ -1,0 +1,28 @@
+.page {
+  width: 720px;
+  padding: 16px 16px;
+  margin: 0 auto;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    width: fit-content;
+    margin: 32px 0;
+
+    h1 {
+      margin: auto 0;
+    }
+  }
+
+  .logo {
+    margin: auto 16px auto 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .page {
+    width: 100%;
+  }
+}

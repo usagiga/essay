@@ -1,0 +1,41 @@
+.container {
+  .tags {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 16px 0 0 0;
+    list-style: none;
+
+    li {
+      display: inline-block;
+      padding: 0 4px;
+
+      &::before {
+        content: '#';
+      }
+    }
+  }
+
+  article {
+    padding: 32px 0;
+
+    &:not(:first-child) {
+      border-top: lightgrey 1px solid;
+    }
+
+    header {
+      margin: 8px 0;
+    }
+
+    time {
+      margin: 8px 0;
+      font-size: 0.8em;
+      line-height: 0.8em;
+      color: grey;
+    }
+  }
+
+  .pager {
+    padding: 0 32px;
+  }
+}
